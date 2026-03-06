@@ -1,0 +1,1451 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HPC Workshop | Adamas University</title>
+    <style>
+        /* ===== CSS CUSTOM PROPERTIES ===== */
+        :root {
+            /* Dark Mode (Default) — Oxford Night */
+            --bg-primary: #0a1628;
+            --bg-secondary: #0f1f3a;
+            --bg-tertiary: #152a4a;
+            --bg-card: rgba(21, 42, 74, 0.85);
+            --bg-card-hover: rgba(30, 55, 95, 0.95);
+            --bg-hero-gradient: linear-gradient(180deg, #0a1628 0%, #0f1f3a 50%, #0a1628 100%);
+            --bg-section-alt: #0c1a30;
+            --accent: #c9a84c;
+            --accent-light: #ddc06a;
+            --accent-dim: rgba(201, 168, 76, 0.15);
+            --accent-glow: rgba(201, 168, 76, 0.25);
+            --text-primary: #f5f0e8;
+            --text-secondary: #b8b0a0;
+            --text-muted: #7a7a8a;
+            --border-color: rgba(201, 168, 76, 0.2);
+            --border-card: rgba(201, 168, 76, 0.12);
+            --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.3);
+            --shadow-card-hover: 0 8px 40px rgba(0, 0, 0, 0.45);
+            --shadow-nav: 0 1px 12px rgba(0, 0, 0, 0.4);
+            --nav-bg: rgba(10, 22, 40, 0.88);
+            --table-row-alt: rgba(15, 31, 58, 0.5);
+            --badge-bg: rgba(201, 168, 76, 0.12);
+            --badge-border: rgba(201, 168, 76, 0.3);
+            --callout-bg: rgba(21, 42, 74, 0.6);
+            --callout-border: rgba(201, 168, 76, 0.3);
+            --divider: rgba(201, 168, 76, 0.25);
+            --img-border: #c9a84c;
+            --initials-bg: #152a4a;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #faf6f0;
+            --bg-secondary: #f5f0e8;
+            --bg-tertiary: #ede7db;
+            --bg-card: rgba(255, 255, 255, 0.92);
+            --bg-card-hover: rgba(255, 255, 255, 1);
+            --bg-hero-gradient: linear-gradient(180deg, #faf6f0 0%, #f5f0e8 50%, #faf6f0 100%);
+            --bg-section-alt: #f0ebe2;
+            --accent: #c9a84c;
+            --accent-light: #b8952f;
+            --accent-dim: rgba(201, 168, 76, 0.1);
+            --accent-glow: rgba(201, 168, 76, 0.15);
+            --text-primary: #1a1a1a;
+            --text-secondary: #4a4a5a;
+            --text-muted: #7a7a8a;
+            --border-color: rgba(201, 168, 76, 0.25);
+            --border-card: rgba(0, 0, 0, 0.08);
+            --shadow-card: 0 2px 16px rgba(0, 0, 0, 0.06);
+            --shadow-card-hover: 0 6px 32px rgba(0, 0, 0, 0.1);
+            --shadow-nav: 0 1px 8px rgba(0, 0, 0, 0.08);
+            --nav-bg: rgba(250, 246, 240, 0.92);
+            --table-row-alt: rgba(245, 240, 232, 0.6);
+            --badge-bg: rgba(201, 168, 76, 0.08);
+            --badge-border: rgba(201, 168, 76, 0.25);
+            --callout-bg: rgba(245, 240, 232, 0.8);
+            --callout-border: rgba(201, 168, 76, 0.3);
+            --divider: rgba(201, 168, 76, 0.35);
+            --img-border: #c9a84c;
+            --initials-bg: #ede7db;
+        }
+
+        /* ===== GLOBAL RESET & BASE ===== */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            transition: background 0.4s ease, color 0.4s ease;
+            overflow-x: hidden;
+        }
+
+        /* Page load animation */
+        body.loading {
+            opacity: 0;
+        }
+        body.loaded {
+            opacity: 1;
+            transition: opacity 0.6s ease, background 0.4s ease, color 0.4s ease;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        /* ===== NAVBAR ===== */
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.65rem 2.5rem;
+            background: var(--nav-bg);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: var(--shadow-nav);
+            transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .navbar__logo img {
+            height: 55px;
+            width: auto;
+            transition: opacity 0.3s ease;
+        }
+        .navbar__logo img:hover {
+            opacity: 0.85;
+        }
+
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            background: var(--accent-dim);
+            cursor: pointer;
+            font-size: 1.25rem;
+            transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+            color: var(--accent);
+            line-height: 1;
+        }
+        .theme-toggle:hover {
+            background: var(--accent-glow);
+            transform: scale(1.08);
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            text-align: center;
+            padding: 6rem 2rem 4rem;
+            background: var(--bg-hero-gradient);
+            position: relative;
+            transition: background 0.4s ease;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 1px;
+            background: var(--accent);
+            opacity: 0.5;
+        }
+
+        .hero__title {
+            font-size: 3.2rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            line-height: 1.2;
+            transition: color 0.4s ease;
+        }
+
+        .hero__subtitle {
+            font-size: 1.15rem;
+            font-weight: 400;
+            color: var(--text-secondary);
+            letter-spacing: 0.04em;
+            margin-bottom: 2rem;
+            transition: color 0.4s ease;
+        }
+
+        .hero__divider {
+            color: var(--accent);
+            font-size: 1rem;
+            letter-spacing: 0.5em;
+            opacity: 0.7;
+        }
+
+        /* ===== SECTIONS ===== */
+        .section {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            transition: background 0.4s ease;
+        }
+
+        .section--alt {
+            background: var(--bg-section-alt);
+            max-width: 100%;
+            transition: background 0.4s ease;
+        }
+        .section--alt > .section__inner {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section__heading {
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-align: center;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.04em;
+            transition: color 0.4s ease;
+        }
+
+        .section__divider {
+            text-align: center;
+            color: var(--accent);
+            font-size: 0.85rem;
+            letter-spacing: 0.6em;
+            margin-bottom: 3rem;
+            opacity: 0.6;
+        }
+
+        .section__sub-heading {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            text-align: center;
+            letter-spacing: 0.03em;
+            transition: color 0.4s ease;
+        }
+
+        /* ===== OBJECTIVES GRID ===== */
+        .objectives-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 3rem;
+        }
+
+        .objective-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.85rem;
+            padding: 1.2rem 1.4rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 10px;
+            box-shadow: var(--shadow-card);
+            transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.35s cubic-bezier(0.25,0.46,0.45,0.94), transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94);
+        }
+        .objective-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-card-hover);
+        }
+
+        .objective-item__icon {
+            flex-shrink: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--accent-dim);
+            border-radius: 8px;
+            color: var(--accent);
+            font-size: 0.85rem;
+            font-weight: 700;
+            transition: background 0.4s ease;
+        }
+
+        .objective-item__text {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            transition: color 0.4s ease;
+        }
+
+        /* ===== CALLOUT BOX ===== */
+        .callout {
+            padding: 1.5rem 2rem;
+            background: var(--callout-bg);
+            border-left: 3px solid var(--accent);
+            border-radius: 0 10px 10px 0;
+            margin-bottom: 2.5rem;
+            transition: background 0.4s ease, border-color 0.4s ease;
+        }
+
+        .callout__title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 0.4rem;
+            letter-spacing: 0.05em;
+            transition: color 0.4s ease;
+        }
+
+        .callout__text {
+            font-size: 0.92rem;
+            color: var(--text-secondary);
+            transition: color 0.4s ease;
+        }
+
+        /* ===== BADGES ===== */
+        .badge-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            justify-content: center;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--accent);
+            background: var(--badge-bg);
+            border: 1px solid var(--badge-border);
+            border-radius: 20px;
+            letter-spacing: 0.02em;
+            transition: background 0.4s ease, border-color 0.4s ease, color 0.4s ease;
+        }
+
+        /* ===== DAY CARDS ===== */
+        .day-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .day-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 14px;
+            padding: 2rem;
+            box-shadow: var(--shadow-card);
+            transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.35s cubic-bezier(0.25,0.46,0.45,0.94), transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94);
+            position: relative;
+            overflow: hidden;
+        }
+        .day-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-light));
+            opacity: 0.7;
+        }
+        .day-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-card-hover);
+        }
+
+        .day-card__label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 0.3rem;
+            transition: color 0.4s ease;
+        }
+
+        .day-card__title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            transition: color 0.4s ease;
+        }
+
+        .day-card__list {
+            list-style: none;
+            margin-bottom: 1.2rem;
+        }
+
+        .day-card__list li {
+            position: relative;
+            padding-left: 1.2rem;
+            margin-bottom: 0.45rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            transition: color 0.4s ease;
+        }
+
+        .day-card__list li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.55rem;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--accent);
+            opacity: 0.7;
+        }
+
+        .day-card__hands-on {
+            display: inline-block;
+            padding: 0.3rem 0.85rem;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--accent);
+            background: var(--accent-dim);
+            border: 1px solid var(--accent-glow);
+            border-radius: 6px;
+            letter-spacing: 0.03em;
+            transition: background 0.4s ease, border-color 0.4s ease, color 0.4s ease;
+        }
+
+        /* ===== EVALUATION TABLE ===== */
+        .eval-table-wrapper {
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid var(--border-card);
+            box-shadow: var(--shadow-card);
+            transition: border-color 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .eval-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+        }
+
+        .eval-table thead {
+            background: var(--accent-dim);
+        }
+
+        .eval-table th {
+            padding: 1rem 1.5rem;
+            text-align: left;
+            font-weight: 700;
+            color: var(--accent);
+            letter-spacing: 0.04em;
+            border-bottom: 2px solid var(--border-color);
+            transition: color 0.4s ease, border-color 0.4s ease;
+        }
+
+        .eval-table td {
+            padding: 0.85rem 1.5rem;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border-card);
+            transition: color 0.4s ease, border-color 0.4s ease;
+        }
+
+        .eval-table tbody tr:nth-child(even) {
+            background: var(--table-row-alt);
+        }
+
+        .eval-table tbody tr {
+            transition: background 0.3s ease;
+        }
+
+        .eval-table tbody tr:hover {
+            background: var(--accent-dim);
+        }
+
+        .eval-table .weight-bar {
+            display: inline-block;
+            height: 6px;
+            border-radius: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-light));
+            margin-left: 0.6rem;
+            vertical-align: middle;
+            transition: width 0.6s ease;
+        }
+
+        /* ===== PERSON CARDS ===== */
+        .person-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 1.5rem;
+            justify-items: center;
+        }
+
+        .person-grid--patrons {
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .person-grid--coordinators {
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            max-width: 650px;
+            margin: 0 auto;
+        }
+
+        .person-card {
+            text-align: center;
+            padding: 2rem 1.2rem 1.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 14px;
+            box-shadow: var(--shadow-card);
+            transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.35s cubic-bezier(0.25,0.46,0.45,0.94), transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94);
+            width: 100%;
+            max-width: 280px;
+        }
+
+        .person-card:hover {
+            transform: scale(1.03);
+            box-shadow: var(--shadow-card-hover);
+            border-color: var(--accent-glow);
+        }
+
+        .person-card__img-wrap {
+            width: 140px;
+            height: 140px;
+            margin: 0 auto 1.2rem;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid var(--img-border);
+            box-shadow: 0 0 0 4px var(--accent-dim);
+            transition: border-color 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .person-card--patron .person-card__img-wrap {
+            width: 160px;
+            height: 160px;
+            border-width: 4px;
+        }
+
+        .person-card__img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94);
+        }
+        .person-card:hover .person-card__img-wrap img {
+            transform: scale(1.06);
+        }
+
+        .person-card__initials {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--initials-bg);
+            color: var(--accent);
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            transition: background 0.4s ease, color 0.4s ease;
+        }
+
+        .person-card__name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.3rem;
+            transition: color 0.4s ease;
+        }
+
+        .person-card__title {
+            font-size: 0.85rem;
+            font-weight: 400;
+            color: var(--text-secondary);
+            margin-bottom: 0.15rem;
+            transition: color 0.4s ease;
+        }
+
+        .person-card__affiliation {
+            font-size: 0.82rem;
+            font-weight: 400;
+            color: var(--text-muted);
+            transition: color 0.4s ease;
+        }
+
+        .person-card__role {
+            display: inline-block;
+            margin-top: 0.65rem;
+            padding: 0.2rem 0.75rem;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--accent);
+            background: var(--accent-dim);
+            border: 1px solid var(--accent-glow);
+            border-radius: 12px;
+            transition: background 0.4s ease, border-color 0.4s ease, color 0.4s ease;
+        }
+
+        /* ===== OUTCOMES LIST ===== */
+        .outcomes-list {
+            list-style: none;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .outcomes-list li {
+            position: relative;
+            padding: 0.85rem 0 0.85rem 2.2rem;
+            font-size: 1rem;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border-card);
+            transition: color 0.4s ease, border-color 0.4s ease;
+        }
+
+        .outcomes-list li:last-child {
+            border-bottom: none;
+        }
+
+        .outcomes-list li::before {
+            content: '\2713';
+            position: absolute;
+            left: 0;
+            top: 0.85rem;
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            padding: 6rem 2rem 2rem;
+            border-top: 1px solid var(--border-color);
+            background: var(--bg-primary);
+            transition: background 0.4s ease, border-color 0.4s ease;
+        }
+
+        .footer__grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 4rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer__col-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.75rem;
+            transition: color 0.4s ease;
+        }
+        .footer__col-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 30px;
+            height: 2px;
+            background: var(--accent);
+        }
+
+        .footer__contact-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.65rem;
+            margin-bottom: 0.85rem;
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            transition: color 0.4s ease;
+        }
+
+        .footer__contact-item svg {
+            flex-shrink: 0;
+            margin-top: 0.15rem;
+        }
+
+        .footer__contact-item a {
+            color: var(--text-secondary);
+            transition: color 0.3s ease;
+        }
+        .footer__contact-item a:hover {
+            color: var(--accent);
+        }
+
+        .footer__venue-text {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.65rem;
+            transition: color 0.4s ease;
+        }
+        .footer__venue-text svg {
+            flex-shrink: 0;
+            margin-top: 0.2rem;
+        }
+
+        .footer__link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.85rem;
+            transition: color 0.3s ease;
+        }
+        .footer__link:hover {
+            color: var(--accent);
+        }
+        .footer__link-arrow {
+            display: inline-block;
+            width: 7px;
+            height: 7px;
+            border-right: 1.5px solid var(--accent);
+            border-top: 1.5px solid var(--accent);
+            transform: rotate(45deg);
+            flex-shrink: 0;
+            transition: border-color 0.4s ease;
+        }
+
+        .footer__bottom {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            transition: border-color 0.4s ease;
+        }
+
+        .footer__bottom img {
+            height: 36px;
+            width: auto;
+            opacity: 0.75;
+            transition: opacity 0.3s ease;
+        }
+        .footer__bottom img:hover {
+            opacity: 1;
+        }
+
+        .footer__copyright {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            letter-spacing: 0.02em;
+            transition: color 0.4s ease;
+        }
+
+        /* ===== SCROLL REVEAL ===== */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1024px) {
+            .hero__title {
+                font-size: 2.5rem;
+            }
+            .section {
+                padding: 4rem 1.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 0.5rem 1.2rem;
+            }
+            .navbar__logo img {
+                height: 42px;
+            }
+            .hero {
+                padding: 4.5rem 1.2rem 3rem;
+            }
+            .hero__title {
+                font-size: 1.85rem;
+                letter-spacing: 0.04em;
+            }
+            .hero__subtitle {
+                font-size: 0.95rem;
+            }
+            .section {
+                padding: 3rem 1.2rem;
+            }
+            .section__heading {
+                font-size: 1.45rem;
+            }
+            .objectives-grid {
+                grid-template-columns: 1fr;
+            }
+            .day-cards {
+                grid-template-columns: 1fr;
+            }
+            .person-grid,
+            .person-grid--patrons,
+            .person-grid--coordinators {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 1rem;
+            }
+            .person-card {
+                padding: 1.5rem 0.8rem 1.2rem;
+                max-width: 240px;
+            }
+            .person-card__img-wrap {
+                width: 110px;
+                height: 110px;
+            }
+            .person-card--patron .person-card__img-wrap {
+                width: 130px;
+                height: 130px;
+            }
+            .person-card__name {
+                font-size: 0.95rem;
+            }
+            .footer {
+                padding: 3rem 1.2rem 1.5rem;
+            }
+            .footer__grid {
+                grid-template-columns: 1fr;
+                gap: 2.5rem;
+            }
+            .footer__bottom {
+                flex-direction: column;
+                text-align: center;
+                margin-top: 2.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero__title {
+                font-size: 1.5rem;
+            }
+            .person-grid,
+            .person-grid--patrons,
+            .person-grid--coordinators {
+                grid-template-columns: 1fr;
+            }
+            .person-card {
+                max-width: 260px;
+            }
+        }
+    </style>
+</head>
+<body class="loading">
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar">
+        <div class="navbar__logo">
+            <img src="https://vaani-au.vercel.app/Images/logo.png" alt="Adamas University and AICTE Logo">
+        </div>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark/light mode">
+            <span id="themeIcon"></span>
+        </button>
+    </nav>
+
+    <!-- ===== HERO ===== -->
+    <header class="hero">
+        <h1 class="hero__title reveal">One-Week Workshop on<br>High Performance Computing (HPC) Technologies</h1>
+        <p class="hero__subtitle reveal">Duration: 5 Days (Monday &ndash; Friday) &nbsp;|&nbsp; Hands-on + Conceptual Sessions</p>
+        <div class="hero__divider reveal">&mdash; &#9670; &mdash;</div>
+    </header>
+
+    <main>
+        <!-- ===== WORKSHOP OBJECTIVES ===== -->
+        <section class="section">
+            <h2 class="section__heading reveal">Workshop Objectives</h2>
+            <div class="section__divider reveal">&mdash; &#9670; &mdash;</div>
+
+            <div class="objectives-grid">
+                <div class="objective-item reveal">
+                    <div class="objective-item__icon">01</div>
+                    <p class="objective-item__text">Work confidently in a Linux HPC environment</p>
+                </div>
+                <div class="objective-item reveal">
+                    <div class="objective-item__icon">02</div>
+                    <p class="objective-item__text">Understand HPC system architecture and compute clusters</p>
+                </div>
+                <div class="objective-item reveal">
+                    <div class="objective-item__icon">03</div>
+                    <p class="objective-item__text">Write optimized Python programs for scientific workloads</p>
+                </div>
+                <div class="objective-item reveal">
+                    <div class="objective-item__icon">04</div>
+                    <p class="objective-item__text">Develop GPU-accelerated programs using CUDA</p>
+                </div>
+                <div class="objective-item reveal">
+                    <div class="objective-item__icon">05</div>
+                    <p class="objective-item__text">Implement distributed computing using MPI</p>
+                </div>
+                <div class="objective-item reveal">
+                    <div class="objective-item__icon">06</div>
+                    <p class="objective-item__text">Run and manage jobs using SLURM scheduler</p>
+                </div>
+                <div class="objective-item reveal">
+                    <div class="objective-item__icon">07</div>
+                    <p class="objective-item__text">Execute real workloads on HPC infrastructure</p>
+                </div>
+                <div class="objective-item reveal">
+                    <div class="objective-item__icon">08</div>
+                    <p class="objective-item__text">Build and present a mini HPC application</p>
+                </div>
+            </div>
+
+            <div class="callout reveal">
+                <p class="callout__title">Prerequisites</p>
+                <p class="callout__text">Basic programming knowledge (any language). No prior HPC/GPU experience required.</p>
+            </div>
+
+            <h3 class="section__sub-heading reveal">Software Stack</h3>
+            <div class="badge-grid reveal">
+                <span class="badge">Linux (Ubuntu/RHEL)</span>
+                <span class="badge">Python</span>
+                <span class="badge">NumPy</span>
+                <span class="badge">Numba</span>
+                <span class="badge">Dask</span>
+                <span class="badge">MPI4Py</span>
+                <span class="badge">NVIDIA CUDA Toolkit</span>
+                <span class="badge">OpenMPI / MPICH</span>
+                <span class="badge">SLURM</span>
+                <span class="badge">GCC / NVCC</span>
+                <span class="badge">htop</span>
+                <span class="badge">nvidia-smi</span>
+            </div>
+        </section>
+
+        <!-- ===== CURRICULUM ===== -->
+        <section class="section--alt">
+            <div class="section__inner">
+                <h2 class="section__heading reveal">Curriculum</h2>
+                <div class="section__divider reveal">&mdash; &#9670; &mdash;</div>
+
+                <div class="day-cards">
+                    <!-- Day 1 -->
+                    <article class="day-card reveal">
+                        <p class="day-card__label">Day 1 &mdash; Monday</p>
+                        <h3 class="day-card__title">Linux for HPC Users</h3>
+                        <ul class="day-card__list">
+                            <li>Introduction to HPC and cluster environments</li>
+                            <li>Linux file system and essential commands</li>
+                            <li>SSH access and environment setup</li>
+                            <li>Compilation using gcc</li>
+                        </ul>
+                        <span class="day-card__hands-on">Hands-on: Run programs &amp; monitor resources</span>
+                    </article>
+
+                    <!-- Day 2 -->
+                    <article class="day-card reveal">
+                        <p class="day-card__label">Day 2 &mdash; Tuesday</p>
+                        <h3 class="day-card__title">Python for Scientific Computing</h3>
+                        <ul class="day-card__list">
+                            <li>Scientific Python ecosystem</li>
+                            <li>NumPy optimization and benchmarking</li>
+                            <li>Parallel Python (multiprocessing, joblib, Dask)</li>
+                        </ul>
+                        <span class="day-card__hands-on">Hands-on: Parallelize numerical workloads</span>
+                    </article>
+
+                    <!-- Day 3 -->
+                    <article class="day-card reveal">
+                        <p class="day-card__label">Day 3 &mdash; Wednesday</p>
+                        <h3 class="day-card__title">HPC Architecture + CUDA</h3>
+                        <ul class="day-card__list">
+                            <li>Cluster architecture and compute nodes</li>
+                            <li>CPU vs GPU computing model</li>
+                            <li>CUDA programming (threads, blocks, kernels)</li>
+                        </ul>
+                        <span class="day-card__hands-on">Hands-on: GPU vector computation</span>
+                    </article>
+
+                    <!-- Day 4 -->
+                    <article class="day-card reveal">
+                        <p class="day-card__label">Day 4 &mdash; Thursday</p>
+                        <h3 class="day-card__title">MPI + SLURM</h3>
+                        <ul class="day-card__list">
+                            <li>Distributed computing concepts</li>
+                            <li>MPI programming and communication</li>
+                            <li>SLURM job scheduling and scripts</li>
+                        </ul>
+                        <span class="day-card__hands-on">Hands-on: Multi-node execution</span>
+                    </article>
+
+                    <!-- Day 5 -->
+                    <article class="day-card reveal">
+                        <p class="day-card__label">Day 5 &mdash; Friday</p>
+                        <h3 class="day-card__title">Integrated Workflow + Project</h3>
+                        <ul class="day-card__list">
+                            <li>Performance optimization and scaling</li>
+                            <li>Team-based HPC mini project</li>
+                            <li>Benchmarking and profiling</li>
+                            <li>Final competition and evaluation</li>
+                        </ul>
+                        <span class="day-card__hands-on">Hands-on: Build &amp; present HPC application</span>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== EVALUATION ===== -->
+        <section class="section">
+            <h2 class="section__heading reveal">Final Project Evaluation</h2>
+            <div class="section__divider reveal">&mdash; &#9670; &mdash;</div>
+
+            <div class="eval-table-wrapper reveal">
+                <table class="eval-table">
+                    <thead>
+                        <tr>
+                            <th>Criteria</th>
+                            <th>Weightage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Performance Speedup</td>
+                            <td>30% <span class="weight-bar" style="width: 90px;"></span></td>
+                        </tr>
+                        <tr>
+                            <td>Correctness</td>
+                            <td>25% <span class="weight-bar" style="width: 75px;"></span></td>
+                        </tr>
+                        <tr>
+                            <td>Parallel Efficiency</td>
+                            <td>20% <span class="weight-bar" style="width: 60px;"></span></td>
+                        </tr>
+                        <tr>
+                            <td>Code Optimization</td>
+                            <td>15% <span class="weight-bar" style="width: 45px;"></span></td>
+                        </tr>
+                        <tr>
+                            <td>Presentation</td>
+                            <td>10% <span class="weight-bar" style="width: 30px;"></span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ===== OUR PATRONS ===== -->
+        <section class="section--alt">
+            <div class="section__inner">
+                <h2 class="section__heading reveal">Our Patrons</h2>
+                <div class="section__divider reveal">&mdash; &#9670; &mdash;</div>
+
+                <div class="person-grid person-grid--patrons">
+                    <figure class="person-card person-card--patron reveal">
+                        <div class="person-card__img-wrap">
+                            <img src="https://vaani-au.vercel.app/Images/SamitRay.jpeg" alt="Prof. (Dr.) Samit Ray" loading="lazy">
+                        </div>
+                        <figcaption>
+                            <p class="person-card__name">Prof. (Dr.) Samit Ray</p>
+                            <p class="person-card__title">Honorable Chancellor</p>
+                            <p class="person-card__affiliation">Adamas University</p>
+                            <span class="person-card__role">Patron</span>
+                        </figcaption>
+                    </figure>
+
+                    <figure class="person-card person-card--patron reveal">
+                        <div class="person-card__img-wrap">
+                            <img src="https://vaani-au.vercel.app/Images/suranjanDas.jpg" alt="Prof. (Dr) Suranjan Das" loading="lazy">
+                        </div>
+                        <figcaption>
+                            <p class="person-card__name">Prof. (Dr) Suranjan Das</p>
+                            <p class="person-card__title">Honorable Vice Chancellor</p>
+                            <p class="person-card__affiliation">Adamas University</p>
+                            <span class="person-card__role">Patron</span>
+                        </figcaption>
+                    </figure>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== RESOURCE PERSONS ===== -->
+        <section class="section">
+            <h2 class="section__heading reveal">Resource Persons</h2>
+            <div class="section__divider reveal">&mdash; &#9670; &mdash;</div>
+
+            <div class="person-grid">
+                <figure class="person-card reveal">
+                    <div class="person-card__img-wrap">
+                        <img src="https://vaani-au.vercel.app/Images/RadhaTamalGoswami.jpeg" alt="Dr. Radha Tamal Goswami" loading="lazy">
+                    </div>
+                    <figcaption>
+                        <p class="person-card__name">Dr. Radha Tamal Goswami</p>
+                        <p class="person-card__title">Professor</p>
+                        <p class="person-card__affiliation">Adamas University</p>
+                    </figcaption>
+                </figure>
+
+                <figure class="person-card reveal">
+                    <div class="person-card__img-wrap">
+                        <img src="https://vaani-au.vercel.app/Images/Amlan%20Chakrabarti.png" alt="Dr. Amlan Chakrabarti" loading="lazy">
+                    </div>
+                    <figcaption>
+                        <p class="person-card__name">Dr. Amlan Chakrabarti</p>
+                        <p class="person-card__title">Professor</p>
+                        <p class="person-card__affiliation">Calcutta University</p>
+                    </figcaption>
+                </figure>
+
+                <figure class="person-card reveal">
+                    <div class="person-card__img-wrap">
+                        <img src="https://vaani-au.vercel.app/Images/RajatSubhroRoy.jpeg" alt="Mr. Rajat Subhro Roy" loading="lazy">
+                    </div>
+                    <figcaption>
+                        <p class="person-card__name">Mr. Rajat Subhro Roy</p>
+                        <p class="person-card__title">Director</p>
+                        <p class="person-card__affiliation">Adamas Tech</p>
+                    </figcaption>
+                </figure>
+
+                <figure class="person-card reveal">
+                    <div class="person-card__img-wrap">
+                        <img src="https://vaani-au.vercel.app/Images/SouvikDas.jpeg" alt="Mr. Souvik Das" loading="lazy">
+                    </div>
+                    <figcaption>
+                        <p class="person-card__name">Mr. Souvik Das</p>
+                        <p class="person-card__title">IBM Garage Leader, AI/Generative AI Leader</p>
+                        <p class="person-card__affiliation">IBM Consulting</p>
+                    </figcaption>
+                </figure>
+
+                <figure class="person-card reveal">
+                    <div class="person-card__img-wrap">
+                        <img src="https://vaani-au.vercel.app/Images/SajalSaha.jpg" alt="Dr. Sajal Saha" loading="lazy">
+                    </div>
+                    <figcaption>
+                        <p class="person-card__name">Dr. Sajal Saha</p>
+                        <p class="person-card__title">Associate Dean &amp; HOD (CSE)</p>
+                        <p class="person-card__affiliation">Adamas University</p>
+                    </figcaption>
+                </figure>
+
+                <figure class="person-card reveal">
+                    <div class="person-card__img-wrap">
+                        <img src="https://vaani-au.vercel.app/Images/Nilanjan.jpg" alt="Dr. Nilanjan Dey" loading="lazy">
+                    </div>
+                    <figcaption>
+                        <p class="person-card__name">Dr. Nilanjan Dey</p>
+                        <p class="person-card__title">Professor</p>
+                        <p class="person-card__affiliation">Techno Int. Newtown</p>
+                    </figcaption>
+                </figure>
+
+                <figure class="person-card reveal">
+                    <div class="person-card__img-wrap">
+                        <img src="https://vaani-au.vercel.app/Images/SurojitBose.png" alt="Dr. Surojit Bose" loading="lazy">
+                    </div>
+                    <figcaption>
+                        <p class="person-card__name">Dr. Surojit Bose</p>
+                        <p class="person-card__title">Associate Professor</p>
+                        <p class="person-card__affiliation">Kusum Devi Dental Hospital</p>
+                    </figcaption>
+                </figure>
+
+                <figure class="person-card reveal">
+                    <div class="person-card__img-wrap">
+                        <img src="https://vaani-au.vercel.app/Images/NiladriRoy.jpeg" alt="Mr. Niladri Roy" loading="lazy">
+                    </div>
+                    <figcaption>
+                        <p class="person-card__name">Mr. Niladri Roy</p>
+                        <p class="person-card__title">Enterprise Architect &amp; Product Delivery Lead</p>
+                        <p class="person-card__affiliation">Tata Consultancy Services</p>
+                    </figcaption>
+                </figure>
+
+                <figure class="person-card reveal">
+                    <div class="person-card__img-wrap">
+                        <img src="https://vaani-au.vercel.app/Images/SwalpaKumarRoy.jpeg" alt="Dr. Swalpa Kumar Roy" loading="lazy">
+                    </div>
+                    <figcaption>
+                        <p class="person-card__name">Dr. Swalpa Kumar Roy</p>
+                        <p class="person-card__title">Assistant Professor</p>
+                        <p class="person-card__affiliation">AGEC</p>
+                    </figcaption>
+                </figure>
+
+                <figure class="person-card reveal">
+                    <div class="person-card__img-wrap">
+                        <img src="https://vaani-au.vercel.app/Images/SaptarshiGoswami.png" alt="Dr. Saptarshi Goswami" loading="lazy">
+                    </div>
+                    <figcaption>
+                        <p class="person-card__name">Dr. Saptarshi Goswami</p>
+                        <p class="person-card__title">Assistant Professor</p>
+                        <p class="person-card__affiliation">Banga Bashi College</p>
+                    </figcaption>
+                </figure>
+            </div>
+        </section>
+
+        <!-- ===== COORDINATORS & COMMITTEE ===== -->
+        <section class="section--alt">
+            <div class="section__inner">
+                <h2 class="section__heading reveal">Coordinators &amp; Committee</h2>
+                <div class="section__divider reveal">&mdash; &#9670; &mdash;</div>
+
+                <!-- Coordinators -->
+                <h3 class="section__sub-heading reveal">Coordinators</h3>
+                <div class="person-grid person-grid--coordinators" style="margin-bottom: 3rem;">
+                    <figure class="person-card reveal">
+                        <div class="person-card__img-wrap">
+                            <img src="https://vaani-au.vercel.app/Images/SajalSaha.jpg" alt="Prof. (Dr) Sajal Saha" loading="lazy">
+                        </div>
+                        <figcaption>
+                            <p class="person-card__name">Prof. (Dr) Sajal Saha</p>
+                            <p class="person-card__title">Associate Dean &amp; HOD (CSE)</p>
+                            <p class="person-card__affiliation">Adamas University</p>
+                            <span class="person-card__role">Coordinator</span>
+                        </figcaption>
+                    </figure>
+
+                    <figure class="person-card reveal">
+                        <div class="person-card__img-wrap">
+                            <img src="https://vaani-au.vercel.app/Images/BodhiChakraborty.jpeg" alt="Dr. Bodhi Chakraborty" loading="lazy">
+                        </div>
+                        <figcaption>
+                            <p class="person-card__name">Dr. Bodhi Chakraborty</p>
+                            <p class="person-card__title">Assistant Professor</p>
+                            <span class="person-card__role">Co-Coordinator</span>
+                        </figcaption>
+                    </figure>
+                </div>
+
+                <!-- Committee Members -->
+                <h3 class="section__sub-heading reveal">Committee Members</h3>
+                <div class="person-grid">
+                    <figure class="person-card reveal">
+                        <div class="person-card__img-wrap">
+                            <img src="https://vaani-au.vercel.app/Images/DebduttaPal.jpg" alt="Prof. (Dr) Debdutta Pal" loading="lazy">
+                        </div>
+                        <figcaption>
+                            <p class="person-card__name">Prof. (Dr) Debdutta Pal</p>
+                            <p class="person-card__title">Professor</p>
+                        </figcaption>
+                    </figure>
+
+                    <figure class="person-card reveal">
+                        <div class="person-card__img-wrap">
+                            <img src="https://vaani-au.vercel.app/Images/PrabhatDas.jpeg" alt="Mr. Prabhat Das" loading="lazy">
+                        </div>
+                        <figcaption>
+                            <p class="person-card__name">Mr. Prabhat Das</p>
+                            <p class="person-card__title">Assistant Professor</p>
+                        </figcaption>
+                    </figure>
+
+                    <figure class="person-card reveal">
+                        <div class="person-card__img-wrap">
+                            <img src="https://vaani-au.vercel.app/Images/JhilamMukherjee.jpeg" alt="Dr. Jhilam Mukherjee" loading="lazy">
+                        </div>
+                        <figcaption>
+                            <p class="person-card__name">Dr. Jhilam Mukherjee</p>
+                            <p class="person-card__title">Assistant Professor</p>
+                        </figcaption>
+                    </figure>
+
+                    <figure class="person-card reveal">
+                        <div class="person-card__img-wrap">
+                            <img src="https://vaani-au.vercel.app/Images/VictorDas.JPG" alt="Mr. Victor Das" loading="lazy">
+                        </div>
+                        <figcaption>
+                            <p class="person-card__name">Mr. Victor Das</p>
+                            <p class="person-card__title">Assistant Professor</p>
+                        </figcaption>
+                    </figure>
+
+                    <figure class="person-card reveal">
+                        <div class="person-card__img-wrap">
+                            <img src="https://vaani-au.vercel.app/Images/ShipluDas.jpeg" alt="Mr. Shiplu Das" loading="lazy">
+                        </div>
+                        <figcaption>
+                            <p class="person-card__name">Mr. Shiplu Das</p>
+                            <p class="person-card__title">Assistant Professor</p>
+                        </figcaption>
+                    </figure>
+
+                    <figure class="person-card reveal">
+                        <div class="person-card__img-wrap">
+                            <div class="person-card__initials">RD</div>
+                        </div>
+                        <figcaption>
+                            <p class="person-card__name">Mrs. Rupanwita Das Mahapatra</p>
+                            <p class="person-card__title">Assistant Professor</p>
+                        </figcaption>
+                    </figure>
+
+                    <figure class="person-card reveal">
+                        <div class="person-card__img-wrap">
+                            <img src="https://vaani-au.vercel.app/Images/BishalMondal.jpg" alt="Mr. Bishal Mondal" loading="lazy">
+                        </div>
+                        <figcaption>
+                            <p class="person-card__name">Mr. Bishal Mondal</p>
+                            <p class="person-card__title">Technical Assistant</p>
+                        </figcaption>
+                    </figure>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== LEARNING OUTCOMES ===== -->
+        <section class="section">
+            <h2 class="section__heading reveal">Learning Outcomes</h2>
+            <div class="section__divider reveal">&mdash; &#9670; &mdash;</div>
+
+            <ul class="outcomes-list">
+                <li class="reveal">Use HPC clusters confidently</li>
+                <li class="reveal">Develop GPU-accelerated applications</li>
+                <li class="reveal">Run distributed workloads across nodes</li>
+                <li class="reveal">Manage and schedule jobs using SLURM</li>
+                <li class="reveal">Optimize applications for large-scale computation</li>
+            </ul>
+        </section>
+    </main>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <div class="footer__grid">
+            <!-- Contact Information -->
+            <div class="footer__col">
+                <h3 class="footer__col-title">Contact Information</h3>
+                <div class="footer__contact-item">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                    <span>Prof. (Dr) Sajal Saha | Coordinator</span>
+                </div>
+                <div class="footer__contact-item">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                    <a href="tel:+919477240461">+91 9477240461</a>
+                </div>
+                <div class="footer__contact-item">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                    <a href="mailto:sajal1.saha@adamasuniversity.ac.in">sajal1.saha@adamasuniversity.ac.in</a>
+                </div>
+                <div class="footer__contact-item">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    <span>Workshop Hours: 9:00 AM &ndash; 5:30 PM</span>
+                </div>
+            </div>
+
+            <!-- Venue -->
+            <div class="footer__col">
+                <h3 class="footer__col-title">Venue</h3>
+                <div class="footer__venue-text">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    <span>Department of Computer Science and Engineering,<br>Adamas University,<br>Adamas Knowledge City,<br>Barasat &ndash; Barrackpore Road,<br>Jagannathpur, Kolkata,<br>West Bengal 700126</span>
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="footer__col">
+                <h3 class="footer__col-title">Quick Links</h3>
+                <a href="https://www.aucse.in/" target="_blank" rel="noopener noreferrer" class="footer__link">
+                    <span class="footer__link-arrow"></span>Workshop Website
+                </a>
+                <a href="https://atalacademy.aicte-india.org/login" target="_blank" rel="noopener noreferrer" class="footer__link">
+                    <span class="footer__link-arrow"></span>Registration Portal
+                </a>
+                <a href="https://adamasuniversity.ac.in/" target="_blank" rel="noopener noreferrer" class="footer__link">
+                    <span class="footer__link-arrow"></span>Adamas University
+                </a>
+            </div>
+        </div>
+
+        <!-- Footer Bottom -->
+        <div class="footer__bottom">
+            <img src="https://vaani-au.vercel.app/Images/logo.png" alt="Adamas University">
+            <p class="footer__copyright">&copy; 2025 One-Week Workshop on High Performance Computing (HPC) Technologies. Organized by Department of Computer Science and Engineering, Adamas University. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- ===== JAVASCRIPT ===== -->
+    <script>
+        (function () {
+            // === Theme Toggle ===
+            const html = document.documentElement;
+            const toggle = document.getElementById('themeToggle');
+            const icon = document.getElementById('themeIcon');
+
+            function setTheme(theme) {
+                html.setAttribute('data-theme', theme);
+                icon.textContent = theme === 'dark' ? '\uD83C\uDF19' : '\u2600\uFE0F';
+                localStorage.setItem('hpc-theme', theme);
+            }
+
+            // Load saved preference or default to dark
+            const saved = localStorage.getItem('hpc-theme');
+            setTheme(saved || 'dark');
+
+            toggle.addEventListener('click', function () {
+                const current = html.getAttribute('data-theme');
+                setTheme(current === 'dark' ? 'light' : 'dark');
+            });
+
+            // === Page Load Animation ===
+            window.addEventListener('DOMContentLoaded', function () {
+                document.body.classList.remove('loading');
+                document.body.classList.add('loaded');
+            });
+
+            // Fallback if DOMContentLoaded already fired
+            if (document.readyState !== 'loading') {
+                document.body.classList.remove('loading');
+                document.body.classList.add('loaded');
+            }
+
+            // === Scroll Reveal with IntersectionObserver ===
+            const revealElements = document.querySelectorAll('.reveal');
+
+            if ('IntersectionObserver' in window) {
+                const observer = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (entry) {
+                        if (entry.isIntersecting) {
+                            // Stagger siblings
+                            const parent = entry.target.parentElement;
+                            const siblings = Array.from(parent.querySelectorAll('.reveal'));
+                            const index = siblings.indexOf(entry.target);
+                            entry.target.style.transitionDelay = (index * 0.08) + 's';
+                            entry.target.classList.add('visible');
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, {
+                    threshold: 0.12,
+                    rootMargin: '0px 0px -40px 0px'
+                });
+
+                revealElements.forEach(function (el) {
+                    observer.observe(el);
+                });
+            } else {
+                // Fallback: show all
+                revealElements.forEach(function (el) {
+                    el.classList.add('visible');
+                });
+            }
+        })();
+    </script>
+</body>
+</html>
